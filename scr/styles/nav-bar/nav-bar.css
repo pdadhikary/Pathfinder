@@ -1,0 +1,27 @@
+.nav-bar {
+    margin: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.btn {
+    padding: 10px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 700;
+    box-sizing: content-box;
+    border: solid 2px #17252a;
+    transition: border 0.1s ease-in;
+}
+
+.btn:hover {
+    border: solid 2px #fff;
+}
+
+#find-path {
+    background-color: rgb(12, 166, 172);
+    padding: 15px;
+    border-radius: 15px;
+}

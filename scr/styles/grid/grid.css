@@ -1,0 +1,45 @@
+#container {
+    display: flex;
+    justify-content: center;
+}
+
+.row {
+    box-sizing: border-box;
+    display: block;
+    margin: 0px;
+    font-size: 0;
+}
+
+.node {
+    box-sizing: border-box;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: solid 1px #fff;
+    cursor: pointer;
+}
+
+.start {
+    background-image: url(../../../build/images/start-node.svg);
+    background-size: contain;
+    background-position: center;
+}
+
+.target {
+    background-image: url(../../../build/images/end-node.svg);
+    background-size: contain;
+    background-position: center;
+}
+
+.wall {
+    background-color: #fff;
+    border: none;
+}
+
+.visited {
+    background-color: #338f8a;
+}
+
+.shortest-path {
+    background-color: #f37f12;
+}
