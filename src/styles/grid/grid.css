@@ -13,22 +13,34 @@
 .node {
     box-sizing: border-box;
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     border: solid 1px #fff;
     cursor: pointer;
 }
 
 .start {
-    background-image: url(../../../build/images/start-node.svg);
+    background-image: url(../../../images/start-node.svg);
     background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
 }
 
 .target {
-    background-image: url(../../../build/images/end-node.svg);
+    background-image: url(../../../images/target-node.svg);
     background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
+}
+
+.weight {
+    background-image: url(../../../images/weight-node.svg);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
 }
 
 .wall {

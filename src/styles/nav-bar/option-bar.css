@@ -1,0 +1,26 @@
+.option-bar {
+    margin: 10px;
+    padding: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.option {
+    color: white;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    box-sizing: content-box;
+    border: solid 2px #17252a;
+    transition: border 0.1s ease-in;
+}
+
+.option:hover {
+    border: solid 2px #fff;
+}
+
+.opt-selected {
+    border: solid 2px #fff;
+    transition: none;
+}

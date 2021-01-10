@@ -3,7 +3,23 @@ export const ORIENTATION = {
     VERTICAL: 1,
 };
 
-export const generate = (
+export const recursiveDivision = (walls, height, width) => {
+    generateOuterWalls(walls, height, width);
+    generateMaze(walls, 2, height - 3, 2, width - 3, ORIENTATION.HORIZONTAL);
+};
+
+/**
+ * @author Clément Mihailescu <@clementmihailescu>
+ * https://github.com/clementmihailescu/Pathfinding-Visualizer/blob/master/public/browser/mazeAlgorithms/recursiveDivisionMaze.js
+ *
+ * @param {*} walls
+ * @param {*} rowStart
+ * @param {*} rowEnd
+ * @param {*} colStart
+ * @param {*} colEnd
+ * @param {*} orientation
+ */
+export const generateMaze = (
     walls,
     rowStart,
     rowEnd,
@@ -27,21 +43,11 @@ export const generate = (
         let currentRow = possibleRows[randomRowIndex];
         let colRandom = possibleCols[randomColIndex];
 
-        for (let r = 0; r < 30; r++) {
-            for (let c = 0; c < 60; c++) {
-                if (
-                    r === currentRow &&
-                    c !== colRandom &&
-                    c >= colStart - 1 &&
-                    c <= colEnd + 1
-                ) {
-                    walls.push(`${r}-${c}`);
-                }
-            }
-        }
+        for (let n = colStart - 1; n <= colEnd + 1; n++)
+            if (n !== colRandom) walls.push(`${currentRow}-${n}`);
 
         if (currentRow - 2 - rowStart > colEnd - colStart) {
-            generate(
+            generateMaze(
                 walls,
                 rowStart,
                 currentRow - 2,
@@ -50,7 +56,7 @@ export const generate = (
                 orientation
             );
         } else {
-            generate(
+            generateMaze(
                 walls,
                 rowStart,
                 currentRow - 2,
@@ -60,7 +66,7 @@ export const generate = (
             );
         }
         if (rowEnd - (currentRow + 2) > colEnd - colStart) {
-            generate(
+            generateMaze(
                 walls,
                 currentRow + 2,
                 rowEnd,
@@ -69,7 +75,7 @@ export const generate = (
                 orientation
             );
         } else {
-            generate(
+            generateMaze(
                 walls,
                 currentRow + 2,
                 rowEnd,
@@ -91,22 +97,12 @@ export const generate = (
         let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
         let currentCol = possibleCols[randomColIndex];
         let rowRandom = possibleRows[randomRowIndex];
-        
-        for (let r = 0; r < 30; r++) {
-            for (let c = 0; c < 60; c++) {
-                if (
-                    c === currentCol &&
-                    r !== rowRandom &&
-                    r >= rowStart - 1 &&
-                    r <= rowEnd + 1
-                ) {
-                    walls.push(`${r}-${c}`);
-                }
-            }
-        }
+
+        for (let r = rowStart - 1; r <= rowEnd + 1; r++)
+            if (r !== rowRandom) walls.push(`${r}-${currentCol}`);
 
         if (rowEnd - rowStart > currentCol - 2 - colStart) {
-            generate(
+            generateMaze(
                 walls,
                 rowStart,
                 rowEnd,
@@ -115,7 +111,7 @@ export const generate = (
                 ORIENTATION.HORIZONTAL
             );
         } else {
-            generate(
+            generateMaze(
                 walls,
                 rowStart,
                 rowEnd,
@@ -125,7 +121,7 @@ export const generate = (
             );
         }
         if (rowEnd - rowStart > colEnd - (currentCol + 2)) {
-            generate(
+            generateMaze(
                 walls,
                 rowStart,
                 rowEnd,
@@ -134,7 +130,7 @@ export const generate = (
                 ORIENTATION.HORIZONTAL
             );
         } else {
-            generate(
+            generateMaze(
                 walls,
                 rowStart,
                 rowEnd,
@@ -143,5 +139,20 @@ export const generate = (
                 orientation
             );
         }
+    }
+};
+
+export const generateOuterWalls = (walls, height, width) => {
+    for (let c = 0; c < width - 1; c++) {
+        walls.push(`0-${c}`);
+    }
+    for (let r = 0; r < height - 1; r++) {
+        walls.push(`${r}-${width - 1}`);
+    }
+    for (let c = width - 1; c > 0; c--) {
+        walls.push(`${height - 1}-${c}`);
+    }
+    for (let r = height - 1; r > 0; r--) {
+        walls.push(`${r}-0`);
     }
 };
