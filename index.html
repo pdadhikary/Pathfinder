@@ -23,22 +23,18 @@
     <body>
         <div class="nav-bar">
             <div id="generate" class="btn toggle">Generate Maze</div>
-            <div id="clear-walls" class="btn toggle">Clear Obstacles</div>
+            <div id="clear-obstacles" class="btn toggle">Clear Obstacles</div>
             <div id="find-path" class="btn toggle">Find Shortest Path</div>
             <div id="clear-path" class="btn toggle">Clear Path</div>
             <div id="reset" class="btn toggle">Reset Board</div>
         </div>
         <div class="option-bar">
-            <div class="none"></div>
-            <div class="none"></div>
-            <div id="opt-wall" class="option opt-selected">
-                <i class="fas fa-square"></i> Wall
+            <div id="obstacle-opt" class="option opt-wall">
+                <i id="obstacle-icon" class="fas fa-square"></i>
+                Wall
             </div>
-            <div id="opt-weight" class="option">
-                <i class="fas fa-weight-hanging"></i> Weight
-            </div>
-            <div class="none"></div>
-            <div class="none"></div>
+
+            <div class="option">Speed</div>
         </div>
         <div id="container">
             <div id="grid"></div>

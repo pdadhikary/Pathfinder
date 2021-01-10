@@ -1,20 +1,26 @@
 import { Grid } from "./Pathfinder/Grid/Grid.js";
-import { NodeState } from "./Pathfinder/Grid/NodeState.js";
 import * as _ from "./helper.js";
 import { recursiveDivision } from "./Pathfinder/Alogithms/RecursiveDivision.js";
 import { dijkstra } from "./Pathfinder/Alogithms/Dijkstra.js";
 
-const HEIGHT = 20;
-const WIDTH = 50;
-const { START, TARGET, WALL, WEIGHT, NORMAL } = NodeState;
+const HEIGHT = 21;
+const WIDTH = 60;
+const {
+    START,
+    TARGET,
+    WALL,
+    WEIGHT,
+    NORMAL,
+    VISITED,
+    SHORTEST_PATH,
+} = _.NODE_CLASSES;
 const OBSTACLES = [WEIGHT, WALL];
 const TERMINALS = [START, TARGET];
 const MAZE_GENERTORS = {
-    0: recursiveDivision,
+    RCRSIVE_DIV: recursiveDivision,
 };
 const SHORTEST_PATH_ALGS = {
-    // dijsktra
-    0: () => dijkstra(grid.makeGraph(), grid.start.id, grid.target.id),
+    DIJKSTRA: () => dijkstra(grid.makeGraph(), grid.start.id, grid.target.id),
 };
 
 let grid = new Grid(HEIGHT, WIDTH);
@@ -24,8 +30,8 @@ let algoSpeed = 10;
 let mouseDown = false;
 let pressedNodeState = NORMAL;
 let obstacleType = WALL;
-let mazeAlgorithm = MAZE_GENERTORS[0];
-let shortestPathAlgorithm = SHORTEST_PATH_ALGS[0];
+let mazeAlgorithm = MAZE_GENERTORS.RCRSIVE_DIV;
+let shortestPathAlgorithm = SHORTEST_PATH_ALGS.DIJKSTRA;
 
 /* -------------------------------------------------------------------------- */
 /*                                Main Function                               */
@@ -46,9 +52,9 @@ const createGrid = () => {
         let newRow = _.createNewDOMRow(row);
         for (let col = 0; col < WIDTH; col++) {
             const newNode = _.creatNewDOMNode(row, col);
-            newRow.append(newNode);
+            _.appendChild(newRow, newNode);
         }
-        dom.append(newRow);
+        _.appendChild(dom, newRow);
     }
 
     const startId = grid.start.id;
@@ -64,8 +70,7 @@ const addControlEventListeners = () => {
     const fndShrtstPth_btn = _.getDOMObj(_.BTN_IDS.FIND_SHORTEST_PATH);
     const clearPath_btn = _.getDOMObj(_.BTN_IDS.CLEAR_PATH);
     const reset_btn = _.getDOMObj(_.BTN_IDS.RESET);
-    const wallOpt_btn = _.getDOMObj(_.BTN_IDS.WALL_OPTION);
-    const weightOpt_btn = _.getDOMObj(_.BTN_IDS.WEIGHT_OPTION);
+    const obstacleOption_btn = _.getDOMObj(_.BTN_IDS.OBSTACLE_OPTION);
     const DOMgrid = _.getDOMObj(_.BTN_IDS.GRID);
 
     _.addEvntListnr(generate_btn, _.EVENTS.CLICK, gate(generateMaze));
@@ -80,8 +85,11 @@ const addControlEventListeners = () => {
     );
     _.addEvntListnr(clearPath_btn, _.EVENTS.CLICK, gate(clearPath));
     _.addEvntListnr(reset_btn, _.EVENTS.CLICK, gate(resetGrid));
-    _.addEvntListnr(wallOpt_btn, _.EVENTS.CLICK, gate(selectWallObstacle));
-    _.addEvntListnr(weightOpt_btn, _.EVENTS.CLICK, gate(selectWeightObstacle));
+    _.addEvntListnr(
+        obstacleOption_btn,
+        _.EVENTS.CLICK,
+        gate(toggleObstacleType)
+    );
     _.addEvntListnr(DOMgrid, _.EVENTS.MOUSE_LEAVE, gate(onMouseUp));
 };
 
@@ -121,16 +129,9 @@ const clearPath = () => {
     _.clearDOMPaths();
 };
 
-const selectWallObstacle = () => {
-    obstacleType = WALL;
-    _.toggleWallOptionOn();
-    _.toggleWeightOptionOff();
-};
-
-const selectWeightObstacle = () => {
-    obstacleType = WEIGHT;
-    _.toggleWallOptionOff();
-    _.toggleWeightOptionOn();
+const toggleObstacleType = () => {
+    obstacleType = obstacleType == WALL ? WEIGHT : WALL;
+    _.toggleObstacleOption();
 };
 
 const onMouseDown = (event) => {
@@ -191,14 +192,14 @@ const generateMaze = () => {
     });
 };
 
-const findShortestPath = () => {
+const findShortestPath = async () => {
     isActive = false;
     _.clearDOMPaths();
     let [visitedNodesInOrder, shortestPath] = shortestPathAlgorithm();
-    const startId = grid.start.id;
-    const targetId = grid.target.id;
 
     // remove start and target node
+    const startId = grid.start.id;
+    const targetId = grid.target.id;
     visitedNodesInOrder = visitedNodesInOrder.filter(
         (id) => id !== startId && id !== targetId
     );
@@ -206,38 +207,11 @@ const findShortestPath = () => {
         (id) => id !== startId && id !== targetId
     );
 
-    animateVisitedNodes(visitedNodesInOrder, shortestPath);
-};
+    await animateVisitedNodes(visitedNodesInOrder);
+    await animateShortestPath(shortestPath);
 
-const animateVisitedNodes = (visitedNodes, shortestPath) => {
-    visitedNodes.forEach((id, i) => {
-        if (i === visitedNodes.length - 1) {
-            setTimeout(() => {
-                if (shortestPath.length === 0) {
-                    isActive = true;
-                    isAlgoDone = true;
-                } else {
-                    animateShortestPath(shortestPath);
-                }
-            }, (isAlgoDone ? 0 : algoSpeed) * (i + 1));
-        }
-
-        setTimeout(() => {
-            _.appendClass(_.getDOMNode(id), "visited");
-        }, (isAlgoDone ? 0 : algoSpeed) * i);
-    });
-};
-
-const animateShortestPath = (shortestPath) => {
-    shortestPath.forEach((id, i) => {
-        setTimeout(() => {
-            _.appendClass(_.getDOMNode(id), "shortest-path");
-            if (i === shortestPath.length - 1) {
-                isAlgoDone = true;
-                isActive = true;
-            }
-        }, (isAlgoDone ? 0 : algoSpeed) * i);
-    });
+    isActive = true;
+    isAlgoDone = true;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -292,6 +266,34 @@ const getClassesByState = (state) => {
     }
 
     return output;
+};
+
+const animateVisitedNodes = (visitedNodes) => {
+    return new Promise((resolve, reject) => {
+        const delay = isAlgoDone ? 0 : algoSpeed;
+        visitedNodes.forEach((id, i) => {
+            setTimeout(() => {
+                _.appendClass(_.getDOMNode(id), VISITED);
+            }, delay * i);
+        });
+        setTimeout(() => {
+            resolve();
+        }, delay * visitedNodes.length);
+    });
+};
+
+const animateShortestPath = (shortestPath) => {
+    return new Promise((resolve, reject) => {
+        const delay = isAlgoDone ? 0 : algoSpeed;
+        shortestPath.forEach((id, i) => {
+            setTimeout(() => {
+                _.appendClass(_.getDOMNode(id), SHORTEST_PATH);
+            }, delay * i);
+        });
+        setTimeout(() => {
+            resolve();
+        }, delay * shortestPath.length);
+    });
 };
 
 const gate = (eventFunction) => {

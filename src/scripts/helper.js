@@ -1,7 +1,7 @@
 import { Grid } from "./Pathfinder/Grid/Grid.js";
 import { NodeState } from "./Pathfinder/Grid/NodeState.js";
 
-const NODE_CLASSES = {
+export const NODE_CLASSES = {
     NORMAL: NodeState.NORMAL,
     WALL: NodeState.WALL,
     WEIGHT: NodeState.WEIGHT,
@@ -13,12 +13,11 @@ const NODE_CLASSES = {
 
 export const BTN_IDS = {
     GENERATE_MAZE: "generate",
-    CLEAR_OBSTACLES: "clear-walls",
+    CLEAR_OBSTACLES: "clear-obstacles",
     FIND_SHORTEST_PATH: "find-path",
     CLEAR_PATH: "clear-path",
     RESET: "reset",
-    WALL_OPTION: "opt-wall",
-    WEIGHT_OPTION: "opt-weight",
+    OBSTACLE_OPTION: "obstacle-opt",
     GRID: "grid",
 };
 
@@ -52,6 +51,9 @@ export const creatNewDOMNode = (row, col) =>
 
 // gets the DOM node with given id
 export const getDOMNode = (nodeId) => $(`#${nodeId}`);
+
+// appends the child element to the DOMObj
+export const appendChild = (DOMObj, child) => DOMObj.append(child);
 
 // flags the DOM node as start
 export const setAsDOMStartNode = (DOMNode) => {
@@ -111,9 +113,9 @@ export const setDOMNodeMouseUp = (node, eventFunction) =>
 export const setDOMNodeMouseEnter = (node, eventFunction) =>
     node.off("mouseenter").on("mouseenter", eventFunction);
 
+// clears previous paths from the DOM grid
 export const clearDOMPaths = () => {
     $(`.${NODE_CLASSES.VISITED}`).each(function () {
-        // $(this).attr("class", "node");
         removeClass($(this), NODE_CLASSES.VISITED);
     });
 
@@ -122,18 +124,30 @@ export const clearDOMPaths = () => {
     });
 };
 
-export const toggleWallOptionOff = () => {
-    $("#opt-wall").attr("class", "option");
-};
+// toggles the obstacle type between Walls and Weights
+export const toggleObstacleOption = () => {
+    const icon = {
+        WALL: "fas fa-square",
+        WEIGHT: "fas fa-weight-hanging",
+    };
 
-export const toggleWallOptionOn = () => {
-    $("#opt-wall").attr("class", "option opt-selected");
-};
+    const obstacleOpt = $(`#${BTN_IDS.OBSTACLE_OPTION}`);
 
-export const toggleWeightOptionOff = () => {
-    $("#opt-weight").attr("class", "option");
-};
+    const newIcon = $("<i></i>");
+    let newText = "";
 
-export const toggleWeightOptionOn = () => {
-    $("#opt-weight").attr("class", "option opt-selected");
+    if (obstacleOpt.hasClass("opt-wall")) {
+        removeClass(obstacleOpt, "opt-wall");
+        newIcon.attr("class", icon.WEIGHT);
+        newText = "Weight";
+        appendClass(obstacleOpt, "opt-weight");
+    } else {
+        removeClass(obstacleOpt, "opt-weight");
+        newIcon.attr("class", icon.WALL);
+        newText = "Wall";
+        appendClass(obstacleOpt, "opt-wall");
+    }
+
+    obstacleOpt.empty();
+    obstacleOpt.append(newIcon).append(newText);
 };

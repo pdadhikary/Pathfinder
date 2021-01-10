@@ -13,10 +13,10 @@ class GraphEntry {
     }
 }
 
-/**
- * A class representing a Graph
- */
 export class Graph {
+    /**
+     * Creates an empty Graph
+     */
     constructor() {
         this.edges = {};
         this.vertices = [];
@@ -84,6 +84,9 @@ export class Graph {
         this.edges[from].push(new GraphEntry(to, w));
     }
 
+    /**
+     * Logs a string representation of the graph
+     */
     display() {
         let graph = "";
         this.getVertices().forEach((vertex) => {

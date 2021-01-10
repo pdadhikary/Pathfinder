@@ -57,14 +57,14 @@ export class PriorityQueue {
     }
 
     /**
-     * Updates the key of the given entry.
+     * Updates the priority of the given entry.
      *
      * @param {PQEntry} entry enter to be updated
-     * @param {Number} key new key
+     * @param {Number} newPriority updated priority
      */
-    replaceKey(entry, key) {
+    replaceKey(entry, newPriority) {
         const locator = this._validate(entry);
-        locator.key = key;
+        locator.key = newPriority;
         this._bubble(locator.index);
     }
 
@@ -72,11 +72,11 @@ export class PriorityQueue {
      * Updates the value of the given entry.
      *
      * @param {PQEntry} entry entry to be updated
-     * @param {*} value new value
+     * @param {*} newValue updated value
      */
-    replaceValue(entry, value) {
+    replaceValue(entry, newValue) {
         const locator = this._validate(entry);
-        locator.value = value;
+        locator.value = newValue;
     }
 
     /**
@@ -121,26 +121,32 @@ export class PriorityQueue {
         return this.heap.length === 0;
     }
 
+    // return the index of the parent of the Entry at i
     _parent(i) {
         return Math.floor((i - 1) / 2);
     }
 
+    // return the index of the left child of the Entry at i
     _left(i) {
         return 2 * i + 1;
     }
 
+    // return the index of the right child of the Entry at i
     _right(i) {
         return 2 * i + 2;
     }
 
+    // returns true if Entry at i has a left child, false otherwise
     _hasLeft(i) {
         return this._left(i) < this.size;
     }
 
+    // returns true if Entry at i has a rgiht child, false otherwise
     _hasRight(i) {
         return this._right(i) < this.size;
     }
 
+    // swaps the Entries at i and j
     _swap(i, j) {
         const tmp = this.heap[i];
         this.heap[i] = this.heap[j];
@@ -150,6 +156,7 @@ export class PriorityQueue {
         this.heap[j].index = j;
     }
 
+    // performs an upheap operation from starting from the Entry at i
     _upheap(i) {
         while (i > 0) {
             const p = this._parent(i);
@@ -160,6 +167,7 @@ export class PriorityQueue {
         }
     }
 
+    // performs an downheap operation from starting from the Entry at i
     _downheap(i) {
         while (this._hasLeft(i)) {
             const leftIndex = this._left(i);
@@ -185,11 +193,7 @@ export class PriorityQueue {
         }
     }
 
-    /**
-     * Validates an entry.
-     * @param {PQEntry} entry entry to be validates
-     * @returns {PQEntry} returns the validated entry
-     */
+    // Validates the PQEntry
     _validate(entry) {
         let i = entry.index;
         if (i >= this.heap.length || this.heap[i] !== entry) {
