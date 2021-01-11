@@ -23,10 +23,17 @@ const SHORTEST_PATH_ALGS = {
     DIJKSTRA: () => dijkstra(grid.makeGraph(), grid.start.id, grid.target.id),
 };
 
+const SPEEDS = {
+    INSTANT: 0,
+    FAST: 2,
+    MED: 10,
+    SLOW: 25,
+};
+
 let grid = new Grid(HEIGHT, WIDTH);
 let isActive = true;
 let isAlgoDone = false;
-let algoSpeed = 10;
+let algoSpeed = SPEEDS.MED;
 let mouseDown = false;
 let pressedNodeState = NORMAL;
 let obstacleType = WALL;
@@ -69,13 +76,14 @@ const createGrid = () => {
 };
 
 const addControlEventListeners = () => {
-    const generate_btn = _.getDOMObj(_.BTN_IDS.GENERATE_MAZE);
-    const clrObstacles_btn = _.getDOMObj(_.BTN_IDS.CLEAR_OBSTACLES);
-    const fndShrtstPth_btn = _.getDOMObj(_.BTN_IDS.FIND_SHORTEST_PATH);
-    const clearPath_btn = _.getDOMObj(_.BTN_IDS.CLEAR_PATH);
-    const reset_btn = _.getDOMObj(_.BTN_IDS.RESET);
-    const obstacleOption_btn = _.getDOMObj(_.BTN_IDS.OBSTACLE_OPTION);
-    const DOMgrid = _.getDOMObj(_.DOM_ELEMS.GRID);
+    const generate_btn = _.getDOMObjWithId(_.BTN_IDS.GENERATE_MAZE);
+    const clrObstacles_btn = _.getDOMObjWithId(_.BTN_IDS.CLEAR_OBSTACLES);
+    const fndShrtstPth_btn = _.getDOMObjWithId(_.BTN_IDS.FIND_SHORTEST_PATH);
+    const clearPath_btn = _.getDOMObjWithId(_.BTN_IDS.CLEAR_PATH);
+    const reset_btn = _.getDOMObjWithId(_.BTN_IDS.RESET);
+    const obstacleOption_btn = _.getDOMObjWithId(_.BTN_IDS.OBSTACLE_OPTION);
+    const speedControl_btns = _.getDOMObjsWithClass(_.DOM_ELEMS.SPEED_ITEMS);
+    const DOMgrid = _.getDOMObjWithId(_.DOM_ELEMS.GRID);
 
     _.addEvntListnr(generate_btn, _.EVENTS.CLICK, gate(generateMaze));
     _.addEvntListnr(clrObstacles_btn, _.EVENTS.CLICK, gate(clearObstacles));
@@ -94,6 +102,7 @@ const addControlEventListeners = () => {
         _.EVENTS.CLICK,
         gate(toggleObstacleType)
     );
+    _.addClassEvntListnr(speedControl_btns, _.EVENTS.CLICK, speedControl);
     _.addEvntListnr(DOMgrid, _.EVENTS.MOUSE_LEAVE, gate(onMouseUp));
     _.addEvntListnr(_.getWindow(), _.EVENTS.RESIZE, gate(resetGrid));
 };
@@ -179,6 +188,22 @@ const onMouseEnter = (event) => {
             toggleObstable(row, col);
         }
     }
+};
+
+const speedControl = (event) => {
+    const { id } = event.currentTarget;
+
+    if (id === _.BTN_IDS.SPEED_INST) {
+        algoSpeed = SPEEDS.INSTANT;
+    } else if (id === _.BTN_IDS.SPEED_FAST) {
+        algoSpeed = SPEEDS.FAST;
+    } else if (id === _.BTN_IDS.SPEED_SLOW) {
+        algoSpeed = SPEEDS.SLOW;
+    } else {
+        algoSpeed = SPEEDS.MED;
+    }
+
+    _.toggleOptionsItem(id, _.LIST.SPEED_LIST);
 };
 
 const generateMaze = () => {

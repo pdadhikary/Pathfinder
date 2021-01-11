@@ -15,6 +15,19 @@ export const DOM_ELEMS = {
     NAV_BAR: "nav-bar",
     OPTION_BAR: "opt-bar",
     GRID: "grid",
+    SPEED_ITEMS: "speed-items",
+};
+
+export const LIST = {
+    SPEED_LIST: {
+        LIST_ID: "list-speed",
+        ITEMS: {
+            INSTANT: "speed-inst",
+            FAST: "speed-fst",
+            MED: "speed-med",
+            SLOW: "speed-slw",
+        },
+    },
 };
 
 export const BTN_IDS = {
@@ -24,6 +37,10 @@ export const BTN_IDS = {
     CLEAR_PATH: "clear-path",
     RESET: "reset",
     OBSTACLE_OPTION: "obstacle-opt",
+    SPEED_INST: LIST.SPEED_LIST.ITEMS.INSTANT,
+    SPEED_FAST: LIST.SPEED_LIST.ITEMS.FAST,
+    SPEED_MED: LIST.SPEED_LIST.ITEMS.MED,
+    SPEED_SLOW: LIST.SPEED_LIST.ITEMS.SLOW,
 };
 
 export const EVENTS = {
@@ -38,8 +55,8 @@ export const EVENTS = {
 // returns the available amount of height for DOM grid
 export const getAvailableHeight = () =>
     $(window).height() -
-    $(getDOMObj(DOM_ELEMS.NAV_BAR)).height() * 2 -
-    $(getDOMObj(DOM_ELEMS.OPTION_BAR)).height() * 2;
+    $(getDOMObjWithId(DOM_ELEMS.NAV_BAR)).height() * 2 -
+    $(getDOMObjWithId(DOM_ELEMS.OPTION_BAR)).height() * 2;
 
 // returns the available amount of Width for DOM grid
 export const getAvailableWidth = () => $(window).width();
@@ -59,7 +76,7 @@ export const createNewDOMRow = (row) =>
 export const clearDOMGridRows = (DOMgrid) => DOMgrid.empty();
 
 // returns the DOM grid.
-export const getDOMGrid = () => getDOMObj(DOM_ELEMS.GRID);
+export const getDOMGrid = () => getDOMObjWithId(DOM_ELEMS.GRID);
 
 // creates a DOM node and returns it
 export const creatNewDOMNode = (row, col) =>
@@ -107,16 +124,22 @@ export const removeClass = (DOMObj, removedClass) => {
 export const getDOMObjClass = (DOMObj) => DOMObj.attr("class");
 
 // overrites the DOM object with the given iterable list of classes
-export const setDOMObjClass = (DOMObj, classes) => {
-    return DOMObj.attr("class", classes.join(" "));
-};
+export const setDOMObjClass = (DOMObj, classes) =>
+    DOMObj.attr("class", classes.join(" "));
 
 // retieves the DOM object with id
-export const getDOMObj = (id) => $(`#${id}`);
+export const getDOMObjWithId = (id) => $(`#${id}`);
+
+export const getDOMObjsWithClass = (className) => $(`.${className}`);
 
 // adds an event listener to the DOM object
-export const addEvntListnr = (DOMObj, eventName, eventFunction) => {
+export const addEvntListnr = (DOMObj, eventName, eventFunction) =>
     DOMObj.on(eventName, eventFunction);
+
+export const addClassEvntListnr = (DOMObjs, eventName, eventFunction) => {
+    DOMObjs.each(function () {
+        $(this).on(eventName, eventFunction);
+    });
 };
 
 // set mousedown evenListener to DOMNode with given id
@@ -168,4 +191,18 @@ export const toggleObstacleOption = () => {
 
     obstacleOpt.empty();
     obstacleOpt.append(newIcon).append(newText);
+};
+
+export const toggleOptionsItem = (id, list) => {
+    const listId = list.LIST_ID;
+    const itemIds = list.ITEMS;
+
+    for (let key in itemIds) {
+        const id = itemIds[key];
+        const DOMItem = getDOMObjWithId(id);
+        removeClass(DOMItem, "item-selected");
+    }
+
+    const selectedItem = getDOMObjWithId(id);
+    appendClass(selectedItem, "item-selected");
 };

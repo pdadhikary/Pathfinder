@@ -25,3 +25,40 @@
     padding: 15px;
     border-radius: 15px;
 }
+
+.list-items {
+    width: 80px;
+    padding: 10px;
+    cursor: pointer;
+    color: #17252a;
+    background-color: #fff;
+    font-weight: 700;
+    box-sizing: content-box;
+    border: solid 2px #fff;
+    text-align: center;
+}
+
+.list-items:hover {
+    background-color: #d3d3d3;
+}
+
+.list-container {
+    position: relative;
+}
+
+.list {
+    display: none;
+    position: absolute;
+}
+
+.list-container:hover .list {
+    display: block;
+}
+
+.item-selected {
+    background-color: #888686;
+}
+
+.item-selected:hover {
+    background-color: #888686;
+}
