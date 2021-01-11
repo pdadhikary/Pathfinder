@@ -3,8 +3,8 @@ import * as _ from "./helper.js";
 import { recursiveDivision } from "./Pathfinder/Alogithms/RecursiveDivision.js";
 import { dijkstra } from "./Pathfinder/Alogithms/Dijkstra.js";
 
-const HEIGHT = 21;
-const WIDTH = 60;
+let HEIGHT = 21;
+let WIDTH = 60;
 const {
     START,
     TARGET,
@@ -47,6 +47,10 @@ $(() => {
 /* -------------------------------------------------------------------------- */
 const createGrid = () => {
     let dom = _.clearDOMGridRows(_.getDOMGrid());
+    [HEIGHT, WIDTH] = calculateGridDimensions(
+        _.getAvailableHeight(),
+        _.getAvailableWidth()
+    );
     grid = new Grid(HEIGHT, WIDTH);
     for (let row = 0; row < HEIGHT; row++) {
         let newRow = _.createNewDOMRow(row);
@@ -71,7 +75,7 @@ const addControlEventListeners = () => {
     const clearPath_btn = _.getDOMObj(_.BTN_IDS.CLEAR_PATH);
     const reset_btn = _.getDOMObj(_.BTN_IDS.RESET);
     const obstacleOption_btn = _.getDOMObj(_.BTN_IDS.OBSTACLE_OPTION);
-    const DOMgrid = _.getDOMObj(_.BTN_IDS.GRID);
+    const DOMgrid = _.getDOMObj(_.DOM_ELEMS.GRID);
 
     _.addEvntListnr(generate_btn, _.EVENTS.CLICK, gate(generateMaze));
     _.addEvntListnr(clrObstacles_btn, _.EVENTS.CLICK, gate(clearObstacles));
@@ -91,6 +95,7 @@ const addControlEventListeners = () => {
         gate(toggleObstacleType)
     );
     _.addEvntListnr(DOMgrid, _.EVENTS.MOUSE_LEAVE, gate(onMouseUp));
+    _.addEvntListnr(_.getWindow(), _.EVENTS.RESIZE, gate(resetGrid));
 };
 
 const addNodeEventListeners = () => {
@@ -106,7 +111,6 @@ const addNodeEventListeners = () => {
 };
 
 const clearObstacles = () => {
-    isActive = false;
     isAlgoDone = false;
     for (let row = 0; row < HEIGHT; row++) {
         for (let col = 0; col < WIDTH; col++) {
@@ -115,11 +119,11 @@ const clearObstacles = () => {
             updateDOMNodeVisual(node.id);
         }
     }
-    isActive = true;
 };
 
 const resetGrid = () => {
     isAlgoDone = false;
+    isActive = true;
     createGrid();
     addNodeEventListeners();
 };
@@ -183,13 +187,15 @@ const generateMaze = () => {
     const wallsToAnimate = [];
     mazeAlgorithm(wallsToAnimate, HEIGHT, WIDTH);
 
-    let l = wallsToAnimate.length;
+    const delay = 5;
     wallsToAnimate.forEach((id, i) => {
         setTimeout(() => {
             toggleObstable(...Grid.parseId(id));
-            if (i === l - 1) isActive = true;
-        }, 5 * i);
+        }, delay * i);
     });
+    setTimeout(() => {
+        isActive = true;
+    }, delay * wallsToAnimate.length);
 };
 
 const findShortestPath = async () => {
@@ -217,6 +223,16 @@ const findShortestPath = async () => {
 /* -------------------------------------------------------------------------- */
 /*                              Utility Functions                             */
 /* -------------------------------------------------------------------------- */
+
+const calculateGridDimensions = (availableHeight, availableWidth) => {
+    const nodeLength = 25;
+    const padding = 30;
+    return [
+        Math.floor((availableHeight - padding) / nodeLength),
+        Math.floor((availableWidth - padding) / nodeLength),
+    ];
+};
+
 const moveStart = (row, col) => {
     const currStartId = grid.start.id;
     const currNodeId = Grid.makeId(row, col);
