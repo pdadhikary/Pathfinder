@@ -212,15 +212,14 @@ const generateMaze = () => {
     const wallsToAnimate = [];
     mazeAlgorithm(wallsToAnimate, HEIGHT, WIDTH);
 
-    const delay = 5;
     wallsToAnimate.forEach((id, i) => {
         setTimeout(() => {
             toggleObstable(...Grid.parseId(id));
-        }, delay * i);
+        }, algoSpeed * i);
     });
     setTimeout(() => {
         isActive = true;
-    }, delay * wallsToAnimate.length);
+    }, algoSpeed * wallsToAnimate.length);
 };
 
 const findShortestPath = async () => {
