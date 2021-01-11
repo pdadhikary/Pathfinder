@@ -11,6 +11,12 @@ export const NODE_CLASSES = {
     SHORTEST_PATH: "shortest-path",
 };
 
+export const DOM_ELEMS = {
+    NAV_BAR: "nav-bar",
+    OPTION_BAR: "opt-bar",
+    GRID: "grid",
+};
+
 export const BTN_IDS = {
     GENERATE_MAZE: "generate",
     CLEAR_OBSTACLES: "clear-obstacles",
@@ -18,7 +24,6 @@ export const BTN_IDS = {
     CLEAR_PATH: "clear-path",
     RESET: "reset",
     OBSTACLE_OPTION: "obstacle-opt",
-    GRID: "grid",
 };
 
 export const EVENTS = {
@@ -27,7 +32,20 @@ export const EVENTS = {
     MOUSE_UP: "mouseup",
     MOUSE_ENTER: "mouseenter",
     MOUSE_LEAVE: "mouseleave",
+    RESIZE: "resize",
 };
+
+// returns the available amount of height for DOM grid
+export const getAvailableHeight = () =>
+    $(window).height() -
+    $(getDOMObj(DOM_ELEMS.NAV_BAR)).height() * 2 -
+    $(getDOMObj(DOM_ELEMS.OPTION_BAR)).height() * 2;
+
+// returns the available amount of Width for DOM grid
+export const getAvailableWidth = () => $(window).width();
+
+// gets the window DOM object
+export const getWindow = () => $(window);
 
 const makeId = Grid.makeId;
 
@@ -41,7 +59,7 @@ export const createNewDOMRow = (row) =>
 export const clearDOMGridRows = (DOMgrid) => DOMgrid.empty();
 
 // returns the DOM grid.
-export const getDOMGrid = () => getDOMObj(BTN_IDS.GRID);
+export const getDOMGrid = () => getDOMObj(DOM_ELEMS.GRID);
 
 // creates a DOM node and returns it
 export const creatNewDOMNode = (row, col) =>
