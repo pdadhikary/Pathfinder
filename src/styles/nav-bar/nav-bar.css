@@ -34,7 +34,7 @@
 }
 
 .list-items {
-    width: 80px;
+    display: block;
     padding: 10px;
     cursor: pointer;
     color: #17252a;
@@ -56,10 +56,17 @@
 .list {
     display: none;
     position: absolute;
+    margin: auto;
+    width: 100%;
 }
 
 .list-container:hover .list {
     display: block;
+}
+
+.list-container:hover .btn {
+    border: solid 2px #fff;
+    transition: border 0.1s ease-in;
 }
 
 .item-selected {

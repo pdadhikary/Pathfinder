@@ -16,6 +16,7 @@ export const DOM_ELEMS = {
     OPTION_BAR: "opt-bar",
     GRID: "grid",
     SPEED_ITEMS: "speed-items",
+    MAZE_GENERATORS: "obstacle-gen-algs",
 };
 
 export const LIST = {
@@ -26,6 +27,13 @@ export const LIST = {
             FAST: "speed-fst",
             MED: "speed-med",
             SLOW: "speed-slw",
+        },
+    },
+    GENERATOR_LIST: {
+        LIST_ID: "generator-list",
+        ITEMS: {
+            RCRSIVE_DIV: "rcrsive",
+            RANDOM: "random",
         },
     },
 };
@@ -41,6 +49,8 @@ export const BTN_IDS = {
     SPEED_FAST: LIST.SPEED_LIST.ITEMS.FAST,
     SPEED_MED: LIST.SPEED_LIST.ITEMS.MED,
     SPEED_SLOW: LIST.SPEED_LIST.ITEMS.SLOW,
+    RCRSIVE_DIV: LIST.GENERATOR_LIST.ITEMS.RCRSIVE_DIV,
+    RANDOM: LIST.GENERATOR_LIST.ITEMS.RANDOM,
 };
 
 export const EVENTS = {
