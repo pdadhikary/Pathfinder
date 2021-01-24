@@ -27,7 +27,7 @@ const SPEEDS = {
     INSTANT: 0,
     FAST: 2,
     MED: 10,
-    SLOW: 25,
+    SLOW: 50,
 };
 
 let grid = new Grid(HEIGHT, WIDTH);

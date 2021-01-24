@@ -51,8 +51,6 @@ export const dijkstra = (graph, s, t) => {
         }
     }
 
-    console.log(cloud);
-
     const shortestPath = t in cloud ? findShortestPath(cloud, s, t) : [];
 
     return [visitedVerticiesInOrder, shortestPath];

@@ -5,144 +5,10 @@ export const ORIENTATION = {
 
 export const recursiveDivision = (walls, height, width) => {
     generateOuterWalls(walls, height, width);
-    generateMaze(walls, 2, height - 3, 2, width - 3, ORIENTATION.HORIZONTAL);
+    generateMaze(walls, 2, height - 3, 2, width - 3);
 };
 
-/**
- * @author Clément Mihailescu <@clementmihailescu>
- * https://github.com/clementmihailescu/Pathfinding-Visualizer/blob/master/public/browser/mazeAlgorithms/recursiveDivisionMaze.js
- *
- * @param {*} walls
- * @param {*} rowStart
- * @param {*} rowEnd
- * @param {*} colStart
- * @param {*} colEnd
- * @param {*} orientation
- */
-export const generateMaze = (
-    walls,
-    rowStart,
-    rowEnd,
-    colStart,
-    colEnd,
-    orientation
-) => {
-    if (rowEnd < rowStart || colEnd < colStart) return;
-
-    if (orientation === ORIENTATION.HORIZONTAL) {
-        let possibleRows = [];
-        for (let r = rowStart; r <= rowEnd; r += 2) {
-            possibleRows.push(r);
-        }
-        let possibleCols = [];
-        for (let c = colStart - 1; c <= colEnd + 1; c += 2) {
-            possibleCols.push(c);
-        }
-        let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
-        let randomColIndex = Math.floor(Math.random() * possibleCols.length);
-        let currentRow = possibleRows[randomRowIndex];
-        let colRandom = possibleCols[randomColIndex];
-
-        for (let n = colStart - 1; n <= colEnd + 1; n++)
-            if (n !== colRandom) walls.push(`${currentRow}-${n}`);
-
-        if (currentRow - 2 - rowStart > colEnd - colStart) {
-            generateMaze(
-                walls,
-                rowStart,
-                currentRow - 2,
-                colStart,
-                colEnd,
-                orientation
-            );
-        } else {
-            generateMaze(
-                walls,
-                rowStart,
-                currentRow - 2,
-                colStart,
-                colEnd,
-                ORIENTATION.VERTICAL
-            );
-        }
-        if (rowEnd - (currentRow + 2) > colEnd - colStart) {
-            generateMaze(
-                walls,
-                currentRow + 2,
-                rowEnd,
-                colStart,
-                colEnd,
-                orientation
-            );
-        } else {
-            generateMaze(
-                walls,
-                currentRow + 2,
-                rowEnd,
-                colStart,
-                colEnd,
-                ORIENTATION.VERTICAL
-            );
-        }
-    } else {
-        let possibleCols = [];
-        for (let c = colStart; c <= colEnd; c += 2) {
-            possibleCols.push(c);
-        }
-        let possibleRows = [];
-        for (let r = rowStart - 1; r <= rowEnd + 1; r += 2) {
-            possibleRows.push(r);
-        }
-        let randomColIndex = Math.floor(Math.random() * possibleCols.length);
-        let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
-        let currentCol = possibleCols[randomColIndex];
-        let rowRandom = possibleRows[randomRowIndex];
-
-        for (let r = rowStart - 1; r <= rowEnd + 1; r++)
-            if (r !== rowRandom) walls.push(`${r}-${currentCol}`);
-
-        if (rowEnd - rowStart > currentCol - 2 - colStart) {
-            generateMaze(
-                walls,
-                rowStart,
-                rowEnd,
-                colStart,
-                currentCol - 2,
-                ORIENTATION.HORIZONTAL
-            );
-        } else {
-            generateMaze(
-                walls,
-                rowStart,
-                rowEnd,
-                colStart,
-                currentCol - 2,
-                orientation
-            );
-        }
-        if (rowEnd - rowStart > colEnd - (currentCol + 2)) {
-            generateMaze(
-                walls,
-                rowStart,
-                rowEnd,
-                currentCol + 2,
-                colEnd,
-                ORIENTATION.HORIZONTAL
-            );
-        } else {
-            generateMaze(
-                walls,
-                rowStart,
-                rowEnd,
-                currentCol + 2,
-                colEnd,
-                orientation
-            );
-        }
-    }
-};
-
-export const generateOuterWalls = (walls, height, width) => {
+const generateOuterWalls = (walls, height, width) => {
     for (let c = 0; c < width - 1; c++) {
         walls.push(`0-${c}`);
     }
@@ -155,4 +21,86 @@ export const generateOuterWalls = (walls, height, width) => {
     for (let r = height - 1; r > 0; r--) {
         walls.push(`${r}-0`);
     }
+};
+
+const generateMaze = (
+    walls,
+    rowStart,
+    rowEnd,
+    colStart,
+    colEnd,
+    orientation = Math.floor(Math.random() * 2)
+) => {
+    if (rowEnd < rowStart || colEnd < colStart) return;
+
+    const isHorizontal = orientation === ORIENTATION.HORIZONTAL;
+
+    const r_start = isHorizontal ? rowStart : rowStart - 1;
+    const r_end = isHorizontal ? rowEnd : rowEnd + 1;
+    const possibleRows = [];
+
+    const c_start = isHorizontal ? colStart - 1 : colStart;
+    const c_end = isHorizontal ? colEnd + 1 : colEnd;
+    const possibleCols = [];
+
+    for (let r = r_start; r <= r_end; r += 2) possibleRows.push(r);
+    for (let c = c_start; c <= c_end; c += 2) possibleCols.push(c);
+
+    let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
+    let randomColIndex = Math.floor(Math.random() * possibleCols.length);
+
+    const fixedAxis = isHorizontal
+        ? possibleRows[randomRowIndex]
+        : possibleCols[randomColIndex];
+
+    const hole = isHorizontal
+        ? possibleCols[randomColIndex]
+        : possibleRows[randomRowIndex];
+
+    const start = isHorizontal ? c_start : r_start;
+    const end = isHorizontal ? c_end : r_end;
+
+    for (let n = start; n <= end; n++) {
+        const wall = isHorizontal ? `${fixedAxis}-${n}` : `${n}-${fixedAxis}`;
+
+        if (n !== hole) walls.push(wall);
+    }
+
+    const newRowEnd = isHorizontal ? fixedAxis - 2 : rowEnd;
+    const newColEnd = isHorizontal ? colEnd : fixedAxis - 2;
+
+    let newHeight = newRowEnd - rowStart;
+    let newWidth = newColEnd - colStart;
+
+    let newOrientation;
+
+    newOrientation =
+        newHeight > newWidth ? ORIENTATION.HORIZONTAL : ORIENTATION.VERTICAL;
+
+    generateMaze(
+        walls,
+        rowStart,
+        newRowEnd,
+        colStart,
+        newColEnd,
+        newOrientation
+    );
+
+    const newRowStart = isHorizontal ? fixedAxis + 2 : rowStart;
+    const newColStart = isHorizontal ? colStart : fixedAxis + 2;
+
+    newHeight = rowEnd - newRowStart;
+    newWidth = colEnd - newColStart;
+
+    newOrientation =
+        newHeight > newWidth ? ORIENTATION.HORIZONTAL : ORIENTATION.VERTICAL;
+
+    generateMaze(
+        walls,
+        newRowStart,
+        rowEnd,
+        newColStart,
+        colEnd,
+        newOrientation
+    );
 };
