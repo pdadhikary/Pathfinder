@@ -26,8 +26,8 @@ const SHORTEST_PATH_ALGS = {
 const SPEEDS = {
     INSTANT: 0,
     FAST: 2,
-    MED: 10,
-    SLOW: 50,
+    MED: 15,
+    SLOW: 35,
 };
 
 let grid = new Grid(HEIGHT, WIDTH);
