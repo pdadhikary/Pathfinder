@@ -37,25 +37,15 @@ const generateMaze = (
 
     const r_start = isHorizontal ? rowStart : rowStart - 1;
     const r_end = isHorizontal ? rowEnd : rowEnd + 1;
-    const possibleRows = [];
 
     const c_start = isHorizontal ? colStart - 1 : colStart;
     const c_end = isHorizontal ? colEnd + 1 : colEnd;
-    const possibleCols = [];
 
-    for (let r = r_start; r <= r_end; r += 2) possibleRows.push(r);
-    for (let c = c_start; c <= c_end; c += 2) possibleCols.push(c);
+    const randomRow = randIntInRange(r_start, r_end, 2);
+    const randomCol = randIntInRange(c_start, c_end, 2);
 
-    let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
-    let randomColIndex = Math.floor(Math.random() * possibleCols.length);
-
-    const fixedAxis = isHorizontal
-        ? possibleRows[randomRowIndex]
-        : possibleCols[randomColIndex];
-
-    const hole = isHorizontal
-        ? possibleCols[randomColIndex]
-        : possibleRows[randomRowIndex];
+    const fixedAxis = isHorizontal ? randomRow : randomCol;
+    const hole = isHorizontal ? randomCol : randomRow;
 
     const start = isHorizontal ? c_start : r_start;
     const end = isHorizontal ? c_end : r_end;
@@ -103,4 +93,18 @@ const generateMaze = (
         colEnd,
         newOrientation
     );
+};
+
+/**
+ * Returns a random integer from n from the set
+ * {for i in [min, max] i += step}
+ *
+ * @param {Number} min lower bound, inclusive
+ * @param {Number} max upper bound
+ * @param {Number} step increment value
+ */
+const randIntInRange = (min, max, step = 1) => {
+    const intervals = Math.floor((max - min) / step) + 1;
+    const rand = Math.floor(Math.random() * intervals);
+    return rand * step + min;
 };
