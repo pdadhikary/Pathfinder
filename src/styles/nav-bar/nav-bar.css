@@ -1,9 +1,16 @@
 .nav-bar {
     margin: 10px;
     padding: 20px;
+}
+
+.nav-bar ul {
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+.nav-bar ul li {
+    list-style: none;
 }
 
 .btn {
