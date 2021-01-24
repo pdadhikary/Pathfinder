@@ -21,20 +21,37 @@
     </head>
 
     <body>
-        <div id="nav-bar" class="nav-bar">
-            <div id="generate" class="btn toggle">Generate Maze</div>
-            <div id="clear-obstacles" class="btn toggle">Clear Obstacles</div>
-            <div id="find-path" class="btn toggle">Find Shortest Path</div>
-            <div id="clear-path" class="btn toggle">Clear Path</div>
-            <div id="reset" class="btn toggle">Reset Board</div>
-        </div>
-        <div id="opt-bar" class="option-bar">
+        <nav id="nav-bar" class="nav-bar">
+            <ul>
+                <nav class="list-container">
+                    <div id="generate" class="btn toggle">
+                        Generate Maze <i class="fas fa-caret-down"></i>
+                    </div>
+                    <div id="generator-list" class="list">
+                        <div
+                            id="rcrsive"
+                            class="obstacle-gen-algs list-items item-selected"
+                        >
+                            RECURSIVE DIVISION
+                        </div>
+                        <div id="random" class="obstacle-gen-algs list-items">
+                            RANDOM OBSTACLES
+                        </div>
+                    </div>
+                </nav>
+                <li id="clear-obstacles" class="btn toggle">Clear Obstacles</li>
+                <li id="find-path" class="btn toggle">Find Shortest Path</li>
+                <li id="clear-path" class="btn toggle">Clear Path</li>
+                <li id="reset" class="btn toggle">Reset Board</li>
+            </ul>
+        </nav>
+        <section id="opt-bar" class="option-bar">
             <div id="obstacle-opt" class="option opt-wall">
                 <i id="obstacle-icon" class="fas fa-square"></i>
                 Wall
             </div>
 
-            <div class="list-container">
+            <nav class="list-container">
                 <div class="option">Speed<i class="fas fa-caret-down"></i></div>
                 <div id="list-speed" class="list">
                     <div id="speed-inst" class="speed-items list-items">
@@ -53,10 +70,10 @@
                         SLOW
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="container">
+            </nav>
+        </section>
+        <section id="container">
             <div id="grid"></div>
-        </div>
+        </section>
     </body>
 </html>

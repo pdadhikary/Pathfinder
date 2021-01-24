@@ -1,6 +1,7 @@
 import { Grid } from "./Pathfinder/Grid/Grid.js";
 import * as _ from "./helper.js";
 import { recursiveDivision } from "./Pathfinder/Alogithms/RecursiveDivision.js";
+import { randomObstacle } from "./Pathfinder/Alogithms/RandomObstacle.js";
 import { dijkstra } from "./Pathfinder/Alogithms/Dijkstra.js";
 
 let HEIGHT = 21;
@@ -18,6 +19,7 @@ const OBSTACLES = [WEIGHT, WALL];
 const TERMINALS = [START, TARGET];
 const MAZE_GENERTORS = {
     RCRSIVE_DIV: recursiveDivision,
+    RANDOM: randomObstacle,
 };
 const SHORTEST_PATH_ALGS = {
     DIJKSTRA: () => dijkstra(grid.makeGraph(), grid.start.id, grid.target.id),
@@ -77,6 +79,7 @@ const createGrid = () => {
 
 const addControlEventListeners = () => {
     const generate_btn = _.getDOMObjWithId(_.BTN_IDS.GENERATE_MAZE);
+    const mazeGen_btns = _.getDOMObjsWithClass(_.DOM_ELEMS.MAZE_GENERATORS);
     const clrObstacles_btn = _.getDOMObjWithId(_.BTN_IDS.CLEAR_OBSTACLES);
     const fndShrtstPth_btn = _.getDOMObjWithId(_.BTN_IDS.FIND_SHORTEST_PATH);
     const clearPath_btn = _.getDOMObjWithId(_.BTN_IDS.CLEAR_PATH);
@@ -86,6 +89,11 @@ const addControlEventListeners = () => {
     const DOMgrid = _.getDOMObjWithId(_.DOM_ELEMS.GRID);
 
     _.addEvntListnr(generate_btn, _.EVENTS.CLICK, gate(generateMaze));
+    _.addClassEvntListnr(
+        mazeGen_btns,
+        _.EVENTS.CLICK,
+        gate(selectMazeGenerator)
+    );
     _.addEvntListnr(clrObstacles_btn, _.EVENTS.CLICK, gate(clearObstacles));
     _.addEvntListnr(
         fndShrtstPth_btn,
@@ -206,11 +214,26 @@ const speedControl = (event) => {
     _.toggleOptionsItem(id, _.LIST.SPEED_LIST);
 };
 
+const selectMazeGenerator = (event) => {
+    const { id } = event.currentTarget;
+
+    if (id === _.BTN_IDS.RCRSIVE_DIV) {
+        mazeAlgorithm = MAZE_GENERTORS.RCRSIVE_DIV;
+    } else if (id === _.BTN_IDS.RANDOM) {
+        mazeAlgorithm = MAZE_GENERTORS.RANDOM;
+    }
+
+    _.toggleOptionsItem(id, _.LIST.GENERATOR_LIST);
+    generateMaze();
+};
+
 const generateMaze = () => {
     isActive = false;
     clearObstacles();
     const wallsToAnimate = [];
     mazeAlgorithm(wallsToAnimate, HEIGHT, WIDTH);
+
+    console.log(wallsToAnimate);
 
     wallsToAnimate.forEach((id, i) => {
         setTimeout(() => {
