@@ -2,6 +2,7 @@ import { Grid } from "./Pathfinder/Grid/Grid.js";
 import * as _ from "./helper.js";
 import { recursiveDivision } from "./Pathfinder/Alogithms/RecursiveDivision.js";
 import { randomObstacle } from "./Pathfinder/Alogithms/RandomObstacle.js";
+import { primsMaze } from "./Pathfinder/Alogithms/PrimsMaze.js";
 import { dijkstra } from "./Pathfinder/Alogithms/Dijkstra.js";
 
 let HEIGHT = 21;
@@ -19,6 +20,10 @@ const OBSTACLES = [WEIGHT, WALL];
 const TERMINALS = [START, TARGET];
 const MAZE_GENERTORS = {
     RCRSIVE_DIV: recursiveDivision,
+    PRIMS_MAZE: (...args) => {
+        preparePrimsMaze();
+        primsMaze(...args);
+    },
     RANDOM: randomObstacle,
 };
 const SHORTEST_PATH_ALGS = {
@@ -219,6 +224,8 @@ const selectMazeGenerator = (event) => {
 
     if (id === _.BTN_IDS.RCRSIVE_DIV) {
         mazeAlgorithm = MAZE_GENERTORS.RCRSIVE_DIV;
+    } else if (id === _.BTN_IDS.PRIMS_MAZE) {
+        mazeAlgorithm = MAZE_GENERTORS.PRIMS_MAZE;
     } else if (id === _.BTN_IDS.RANDOM) {
         mazeAlgorithm = MAZE_GENERTORS.RANDOM;
     }
@@ -243,6 +250,11 @@ const generateMaze = () => {
     setTimeout(() => {
         isActive = true;
     }, algoSpeed * wallsToAnimate.length);
+};
+
+const preparePrimsMaze = () => {
+    for (let r = 0; r < HEIGHT; r++)
+        for (let c = 0; c < WIDTH; c++) toggleObstable(r, c);
 };
 
 const findShortestPath = async () => {
@@ -274,10 +286,14 @@ const findShortestPath = async () => {
 const calculateGridDimensions = (availableHeight, availableWidth) => {
     const nodeLength = 25;
     const padding = 30;
-    return [
-        Math.floor((availableHeight - padding) / nodeLength),
-        Math.floor((availableWidth - padding) / nodeLength),
-    ];
+
+    let height = Math.floor((availableHeight - padding) / nodeLength);
+    let width = Math.floor((availableWidth - padding) / nodeLength);
+
+    height = height % 2 === 0 ? height - 1 : height;
+    width = width % 2 === 0 ? width - 1 : width;
+
+    return [height, width];
 };
 
 const moveStart = (row, col) => {

@@ -33,6 +33,7 @@ export const LIST = {
         LIST_ID: "generator-list",
         ITEMS: {
             RCRSIVE_DIV: "rcrsive",
+            PRIMS_MAZE: "prims",
             RANDOM: "random",
         },
     },
@@ -50,6 +51,7 @@ export const BTN_IDS = {
     SPEED_MED: LIST.SPEED_LIST.ITEMS.MED,
     SPEED_SLOW: LIST.SPEED_LIST.ITEMS.SLOW,
     RCRSIVE_DIV: LIST.GENERATOR_LIST.ITEMS.RCRSIVE_DIV,
+    PRIMS_MAZE: LIST.GENERATOR_LIST.ITEMS.PRIMS_MAZE,
     RANDOM: LIST.GENERATOR_LIST.ITEMS.RANDOM,
 };
 
